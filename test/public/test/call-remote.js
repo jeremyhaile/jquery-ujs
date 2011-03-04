@@ -10,7 +10,7 @@ function build_form(attrs) {
 module('call-remote');
 
 function submit(fn) {
-  $('form[data-remote]')
+  $('form')
     .bind('ajax:success', fn)
     .bind('ajax:complete', function() { start() })
     .trigger('submit');
@@ -63,7 +63,7 @@ asyncTest('prefer JS, but accept any format', 1, function() {
     var accept = data.HTTP_ACCEPT;
     // HACK to normalize header sent by jQuery 1.4.4 and below:
     accept = accept.replace('*/*, */*', '*/*');
-    equal(accept, '*/*;q=0.5, text/javascript, application/javascript');
+    ok(accept.indexOf('*/*;q=0.5, text/javascript, application/javascript') === 0, 'Accept: ' + accept);
   });
 });
 
@@ -80,6 +80,15 @@ asyncTest('allow empty "data-remote" attribute', 1, function() {
   
   submit(function() {
     ok(true, 'form with empty "data-remote" attribute is also allowed');
+  });
+});
+
+asyncTest('sends CSRF token in custom header', 1, function() {
+  build_form({ method: 'post' });
+  $('#qunit-fixture').append('<meta name="csrf-token" content="cf50faa3fe97702ca1ae" />');
+
+  submit(function(e, data, status, xhr) {
+    equal(data.HTTP_X_CSRF_TOKEN, 'cf50faa3fe97702ca1ae', 'X-CSRF-Token header should be sent');
   });
 });
 
