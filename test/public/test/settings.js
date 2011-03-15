@@ -1,12 +1,5 @@
 var App = App || {};
 
-App.ajax_timeout = 1000;
-App.confirmation_message = 'Are you absolutely sure?';
-
-App.timeout = function(){
-  setTimeout(function() { start(); }, App.ajax_timeout);
-};
-
 App.assert_callback_invoked = function(callback_name) {
   ok(true, callback_name + ' callback should have been invoked');
 };
@@ -38,6 +31,6 @@ $(document).bind('submit', function(e) {
     if (action.indexOf('iframe') < 0) form.attr('action', action + '?iframe=true')
     form.attr('target', name);
     $('#qunit-fixture').append(iframe);
-    $.event.trigger('iframe:loading', { form: form });
+    $.event.trigger('iframe:loading', form);
   }
 });
