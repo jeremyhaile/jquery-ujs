@@ -343,7 +343,7 @@
           if(rails.handleRemote(link) === false) {
             rails.enableElement(link);
           }
-        } else {
+        } else if (link.data('method')) {
           rails.handleMethod(link);
         }
       },
